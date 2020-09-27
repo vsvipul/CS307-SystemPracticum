@@ -2,9 +2,9 @@
 #define pb push_back
 using namespace std;
 
-vector<string> allCommands{"cd", "clr", "dir", "environ", "echo", "pause", "help", "quit", "history"};
+vector<string> allCommands{"cd", "clr", "dir", "environ", "echo", "pause", "help", "quit", "history", ""};
 
-void printPrompt(){
+void printPrompt() {
     cout<<"myshell>> ";
 }
 
@@ -21,7 +21,7 @@ string parseCommand(string cmdline) {
     return str;
 }
 
-vector<string> getArgs(string cmdline){
+vector<string> getArgs(string cmdline) {
     vector<string> res;
     istringstream ss(cmdline);
     int i=0;
@@ -43,11 +43,19 @@ bool isBuiltIn(string cmd) {
 
 // 1 cd
 // 2 clr
+void clearExec(){
+    #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
+    system("cls");
+    #else
+    system("clear");
+    #endif
+}
+
 // 3 dir
 // 4 environ
 
 // 5 echo
-void echoExec(vector<string> args){
+void echoExec(vector<string> args) {
     for (int i=0;i<args.size();i++){
         cout<<args[i]<<" ";
     }
@@ -55,6 +63,11 @@ void echoExec(vector<string> args){
 }
 
 // 6 pause
+void pauseExec() {
+    cout<<"Execution paused. Press enter to continue.\n";
+    while (cin.get()!='\n');
+}
+
 // 7 help
 // 8 quit
 void quitExec() {
@@ -63,11 +76,18 @@ void quitExec() {
 
 // 9 history
 
-void executeBuiltIn(string cmd, vector<string> args){
-    if (cmd == "echo") {
+void executeBuiltIn(string cmd, vector<string> args) {
+    if (cmd == "") {
+        // Do nothing if just enter is pressed without any input.   
+    }
+    else if (cmd == "echo") {
         echoExec(args);
-    } else if (cmd == "quit"){
+    } else if (cmd == "quit") {
         quitExec();
+    } else if (cmd == "clr") {
+        clearExec();
+    } else if (cmd == "pause") {
+        pauseExec();
     } else {
         cout<<"Command "<<cmd<<": Definition not found.\n";
     }
@@ -83,7 +103,7 @@ int main(int argc, char* argv[]) {
         if (isBuiltIn(cmd)){
             executeBuiltIn(cmd, args);
         } else {
-            cout<<"Command does not exist.\n";
+            cout<<"Command "<<cmd<<": does not exist.\n";
         }
     }
     return 0;
