@@ -41,16 +41,40 @@ bool isBuiltIn(string cmd) {
     return (it != allCommands.end());
 }
 
-void executeBuiltIn(string cmd, vector<string> args){
-    cout<<cmd<<" ";
+// 1 cd
+// 2 clr
+// 3 dir
+// 4 environ
+
+// 5 echo
+void echoExec(vector<string> args){
     for (int i=0;i<args.size();i++){
-        cout<<args[i]<<"\n";
+        cout<<args[i]<<" ";
+    }
+    cout<<"\n";
+}
+
+// 6 pause
+// 7 help
+// 8 quit
+void quitExec() {
+    exit(1);
+}
+
+// 9 history
+
+void executeBuiltIn(string cmd, vector<string> args){
+    if (cmd == "echo") {
+        echoExec(args);
+    } else if (cmd == "quit"){
+        quitExec();
+    } else {
+        cout<<"Command "<<cmd<<": Definition not found.\n";
     }
 }
 
 int main(int argc, char* argv[]) {
     while (1){
-        int childpid;
         string cmd, cmdline;
         printPrompt();
         cmdline = readLine();
