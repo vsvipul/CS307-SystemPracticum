@@ -1,4 +1,8 @@
 #include <bits/stdc++.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <dirent.h>
+
 #define pb push_back
 using namespace std;
 
@@ -28,7 +32,7 @@ vector<string> getArgs(string cmdline) {
     do {
         string word;
         ss>>word;
-        if (i) {
+        if (i && word.size()) {
             res.pb(word);
         }
         i++;
@@ -42,6 +46,17 @@ bool isBuiltIn(string cmd) {
 }
 
 // 1 cd
+
+void changeDir(vector <string> args)
+{
+	if (args.size()!=1)
+	{
+		cout << "Invalid arguments to cd\n";
+		return;
+	}
+	chdir(args[0].c_str());
+}
+
 // 2 clr
 void clearExec(){
     #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
@@ -52,7 +67,40 @@ void clearExec(){
 }
 
 // 3 dir
+
+void listDirContents(vector <string> args)
+{
+	if (args.size()!=1)
+	{
+		cout << "Invalid arguments to dir\n";
+		return;
+	}
+	DIR * directory = opendir(args[0].c_str());
+	struct dirent * curFile;
+	if (directory!=NULL)
+	{
+		while ((curFile = readdir(directory)) !=NULL)
+		{
+			cout << std::string(curFile->d_name) << "\n";
+		}
+	}
+	closedir(directory);
+}
+
+
 // 4 environ
+
+void printEnvironVars()
+{
+	char path[4096];
+	if (getcwd(path, 4096)) {
+		cout << "PWD = " << std::string(path) << "\n";
+	} else {
+		cout << "Error fetching directory\n";
+	}
+	// More to be added.
+}
+
 
 // 5 echo
 void echoExec(vector<string> args) {
@@ -79,8 +127,11 @@ void quitExec() {
 void executeBuiltIn(string cmd, vector<string> args) {
     if (cmd == "") {
         // Do nothing if just enter is pressed without any input.   
-    }
-    else if (cmd == "echo") {
+    } else if (cmd == "cd") {
+		changeDir(args);
+    } else if (cmd == "dir") {
+		listDirContents(args);
+    } else if (cmd == "echo") {
         echoExec(args);
     } else if (cmd == "quit") {
         quitExec();
@@ -88,6 +139,8 @@ void executeBuiltIn(string cmd, vector<string> args) {
         clearExec();
     } else if (cmd == "pause") {
         pauseExec();
+    } else if (cmd == "environ") {
+		printEnvironVars();
     } else {
         cout<<"Command "<<cmd<<": Definition not found.\n";
     }
