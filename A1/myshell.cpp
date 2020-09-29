@@ -174,7 +174,6 @@ int main(int argc, char* argv[]) {
         string cmd, cmdline;
         if (argc==1) printPrompt();
         cmdline = readLine();
-        if (cin.eof()) break;
         history.pb(cmdline);
         cmd = parseCommand(cmdline);
         vector<string> args = getArgs(cmdline);
@@ -183,6 +182,7 @@ int main(int argc, char* argv[]) {
         } else {
             cout<<"Command "<<cmd<<": does not exist.\n";
         }
+        if (cin.eof()) break;
     }
     return 0;
 }
