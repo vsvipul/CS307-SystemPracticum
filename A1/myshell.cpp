@@ -49,20 +49,23 @@ bool isBuiltIn(string cmd) {
     return (it != allCommands.end());
 }
 
+void insertEnvironmentVar(string var) {
+    int j=0;
+    for (j=0;j<var.size();j++) {
+        if (var[j] == '='){
+            break;
+        }
+    }
+    string keyvar = var.substr(0,j);
+    string keyval = var.substr(j+1,var.size()-j-1);
+    environmentVars[keyvar] = keyval;
+}
+
 void initializeEnvironmentVars() {
     char *s = *environ;
     int i=0;
     while (s) {
-        string var = std::string(s);
-        int j=0;
-        for (j=0;j<var.size();j++) {
-            if (var[j] == '='){
-                break;
-            }
-        }
-        string keyvar = var.substr(0,j);
-        string keyval = var.substr(j+1,var.size()-j-1);
-        environmentVars[keyvar]=keyval;
+        insertEnvironmentVar(std::string(s));
         i++;
         s = *(environ+i);
     }
@@ -148,7 +151,7 @@ void pauseExec() {
 // 7 help
 void helpExec() {
     cout<<"\nmyshell\n\nNAME\n\tmyshell - Custom Made Shell from scratch\n\nDESCRIPTION\n\t";
-    cout<<"Supports the commands- cd, clr, dir, ls, environ, echo, pause, help, quit, history, pwd.\n";
+    cout<<"Supports the commands- cd, clr, dir, ls, environ, echo, pause, help, quit, history, pwd, export.\n";
     cout<<"\tAlso, inherits the environment vars of the shell it is opened from.\n";
     cout<<"\tCan run scripts from a file using the command 'myshell batchfilename'.\n\n";
 }
@@ -187,16 +190,8 @@ void exportExec(vector<string> args) {
 		cout << "export requires exactly one argument in the format: 'VARNAME=VALUE'\n";
 		return;
 	}
-    string var = args[0];
-    int j=0;
-    for (j=0;j<var.size();j++) {
-        if (var[j] == '='){
-            break;
-        }
-    }
-    string keyvar = var.substr(0,j);
-    string keyval = var.substr(j+1,var.size()-j-1);
-    environmentVars[keyvar] = keyval;
+    insertEnvironmentVar(args[0]);
+    
 }
 
 void executeBuiltIn(string cmd, vector<string> args) {
