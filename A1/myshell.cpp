@@ -7,8 +7,10 @@
 using namespace std;
 
 vector<string> allCommands{"cd", "clr", "dir", "environ", "echo", "pause", "help", "quit", "history", ""};
+map<string, string> environmentVars;
 vector<string> history;
 
+extern char** environ;
 
 void printPrompt() {
     cout<<"myshell>> ";
@@ -47,6 +49,25 @@ bool isBuiltIn(string cmd) {
     return (it != allCommands.end());
 }
 
+void initializeEnvironmentVars() {
+    char *s = *environ;
+    int i=0;
+    while (s) {
+        string var = std::string(s);
+        int j=0;
+        for (j=0;j<var.size();j++) {
+            if (var[j] == '='){
+                break;
+            }
+        }
+        string keyvar = var.substr(0,j);
+        string keyval = var.substr(j+1,var.size()-j-1);
+        environmentVars[keyvar]=keyval;
+        i++;
+        s = *(environ+i);
+    }
+}
+
 // 1 cd
 void changeDir(vector <string> args)
 {
@@ -56,6 +77,10 @@ void changeDir(vector <string> args)
 	}
 	if (chdir(args[0].c_str()) != 0) {
         cout<<"Error: Specified directory does not exists.\n";
+    } else {
+        char path[4096];
+        setenv("PWD", getcwd(path, 4096), 1);
+        environmentVars["PWD"] = path;
     }
 }
 
@@ -92,17 +117,12 @@ void listDirContents(vector <string> args)
 	}
 }
 
-
 // 4 environ
 void printEnvironVars()
 {
-	char path[4096];
-	if (getcwd(path, 4096)) {
-		cout << "PWD = " << std::string(path) << "\n";
-	} else {
-		cout << "Error fetching directory\n";
-	}
-	// More to be added.
+    for (auto it: environmentVars) {
+        cout<<(it.first)<<"="<<(it.second)<<"\n";
+    }
 }
 
 
@@ -169,6 +189,8 @@ int main(int argc, char* argv[]) {
 			return 0;
 		}
 	}
+
+    initializeEnvironmentVars();
 
     while (1){
         string cmd, cmdline;
