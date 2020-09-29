@@ -48,15 +48,15 @@ bool isBuiltIn(string cmd) {
 }
 
 // 1 cd
-
 void changeDir(vector <string> args)
 {
-	if (args.size()!=1)
-	{
+	if (args.size() != 1) {
 		cout << "cd requires exactly one argument - the directory\n";
 		return;
 	}
-	chdir(args[0].c_str());
+	if (chdir(args[0].c_str()) != 0) {
+        cout<<"Error: Specified directory does not exists.\n";
+    }
 }
 
 // 2 clr
@@ -69,17 +69,20 @@ void clearExec(){
 }
 
 // 3 dir
-
 void listDirContents(vector <string> args)
 {
-	if (args.size()!=1)
-	{
+	if (args.size() > 1) {
 		cout << "dir requires exactly one argument - the directory\n";
 		return;
 	}
-	DIR * directory = opendir(args[0].c_str());
+    DIR* directory;
+    if (args.size() == 0) {
+        directory = opendir(".");
+    } else {
+        directory = opendir(args[0].c_str());
+    }
 	struct dirent * curFile;
-	if (directory!=NULL)
+	if (directory != NULL)
 	{
 		while ((curFile = readdir(directory)) !=NULL)
 		{
@@ -91,7 +94,6 @@ void listDirContents(vector <string> args)
 
 
 // 4 environ
-
 void printEnvironVars()
 {
 	char path[4096];
@@ -125,7 +127,6 @@ void quitExec() {
 }
 
 // 9 history
-
 void printHistory()
 {
 	for (int i=0; i<history.size(); ++i)
@@ -150,9 +151,9 @@ void executeBuiltIn(string cmd, vector<string> args) {
     } else if (cmd == "pause") {
         pauseExec();
     } else if (cmd == "environ") {
-		printEnvironVars();
+	    printEnvironVars();
     } else if (cmd == "history") {
-		printHistory();
+	    printHistory();
     } else {
         cout<<"Command "<<cmd<<": Definition not found.\n";
     }
