@@ -7,6 +7,8 @@
 using namespace std;
 
 vector<string> allCommands{"cd", "clr", "dir", "environ", "echo", "pause", "help", "quit", "history", ""};
+vector<string> history;
+
 
 void printPrompt() {
     cout<<"myshell>> ";
@@ -51,7 +53,7 @@ void changeDir(vector <string> args)
 {
 	if (args.size()!=1)
 	{
-		cout << "Invalid arguments to cd\n";
+		cout << "cd requires exactly one argument - the directory\n";
 		return;
 	}
 	chdir(args[0].c_str());
@@ -72,7 +74,7 @@ void listDirContents(vector <string> args)
 {
 	if (args.size()!=1)
 	{
-		cout << "Invalid arguments to dir\n";
+		cout << "dir requires exactly one argument - the directory\n";
 		return;
 	}
 	DIR * directory = opendir(args[0].c_str());
@@ -83,8 +85,8 @@ void listDirContents(vector <string> args)
 		{
 			cout << std::string(curFile->d_name) << "\n";
 		}
+		closedir(directory);
 	}
-	closedir(directory);
 }
 
 
@@ -124,6 +126,14 @@ void quitExec() {
 
 // 9 history
 
+void printHistory()
+{
+	for (int i=0; i<history.size(); ++i)
+	{
+		cout << i+1 << " " << history[i] << "\n";
+	}
+}
+
 void executeBuiltIn(string cmd, vector<string> args) {
     if (cmd == "") {
         // Do nothing if just enter is pressed without any input.   
@@ -140,7 +150,9 @@ void executeBuiltIn(string cmd, vector<string> args) {
     } else if (cmd == "pause") {
         pauseExec();
     } else if (cmd == "environ") {
-		printEnvironVars();
+	printEnvironVars();
+    } else if (cmd == "history") {
+	printHistory();
     } else {
         cout<<"Command "<<cmd<<": Definition not found.\n";
     }
@@ -151,6 +163,7 @@ int main(int argc, char* argv[]) {
         string cmd, cmdline;
         printPrompt();
         cmdline = readLine();
+        history.pb(cmdline);
         cmd = parseCommand(cmdline);
         vector<string> args = getArgs(cmdline);
         if (isBuiltIn(cmd)){
