@@ -6,7 +6,7 @@
 #define pb push_back
 using namespace std;
 
-vector<string> allCommands{"cd", "clr", "dir", "environ", "echo", "pause", "help", "quit", "history", ""};
+vector<string> allCommands{"cd", "clr", "dir", "environ", "echo", "pause", "help", "quit", "history", "", "pwd", "ls", "export"};
 map<string, string> environmentVars;
 vector<string> history;
 
@@ -68,6 +68,12 @@ void initializeEnvironmentVars() {
     }
 }
 
+string getCurrentDir(){
+    char path[4096];
+    getcwd(path, 4096);
+    return std::string(path);
+}
+
 // 1 cd
 void changeDir(vector <string> args)
 {
@@ -78,9 +84,9 @@ void changeDir(vector <string> args)
 	if (chdir(args[0].c_str()) != 0) {
         cout<<"Error: Specified directory does not exists.\n";
     } else {
-        char path[4096];
-        setenv("PWD", getcwd(path, 4096), 1);
-        environmentVars["PWD"] = path;
+        string curDir = getCurrentDir();
+        setenv("PWD", curDir.c_str(), 1);
+        environmentVars["PWD"] = curDir;
     }
 }
 
@@ -93,7 +99,7 @@ void clearExec(){
     #endif
 }
 
-// 3 dir
+// 3 dir (or ls)
 void listDirContents(vector <string> args)
 {
 	if (args.size() > 1) {
@@ -125,7 +131,6 @@ void printEnvironVars()
     }
 }
 
-
 // 5 echo
 void echoExec(vector<string> args) {
     for (int i=0;i<args.size();i++){
@@ -141,6 +146,13 @@ void pauseExec() {
 }
 
 // 7 help
+void helpExec() {
+    cout<<"\nmyshell\n\nNAME\n\tmyshell - Custom Made Shell from scratch\n\nDESCRIPTION\n\t";
+    cout<<"Supports the commands- cd, clr, dir, ls, environ, echo, pause, help, quit, history, pwd.\n";
+    cout<<"\tAlso, inherits the environment vars of the shell it is opened from.\n";
+    cout<<"\tCan run scripts from a file using the command 'myshell batchfilename'.\n\n";
+}
+
 // 8 quit
 void quitExec() {
     exit(1);
@@ -155,25 +167,63 @@ void printHistory()
 	}
 }
 
+// 10 set SHELL environment variable
+void setShellEnvironmentVar(char* execName) {
+    string curDir = getCurrentDir();
+    string execNameStr = std::string(execName);
+    string shellPath = curDir + execNameStr.substr(1,execNameStr.size()-1);
+    environmentVars["SHELL"] = shellPath;
+}
+
+// 11 pwd
+void pwdExec(){
+    string curDir = getCurrentDir();
+    cout<<curDir<<"\n";
+}
+
+// 12 export
+void exportExec(vector<string> args) {
+    if (args.size() > 1) {
+		cout << "export requires exactly one argument in the format: 'VARNAME=VALUE'\n";
+		return;
+	}
+    string var = args[0];
+    int j=0;
+    for (j=0;j<var.size();j++) {
+        if (var[j] == '='){
+            break;
+        }
+    }
+    string keyvar = var.substr(0,j);
+    string keyval = var.substr(j+1,var.size()-j-1);
+    environmentVars[keyvar] = keyval;
+}
+
 void executeBuiltIn(string cmd, vector<string> args) {
     if (cmd == "") {
         // Do nothing if just enter is pressed without any input.   
     } else if (cmd == "cd") {
 		changeDir(args);
-    } else if (cmd == "dir") {
-		listDirContents(args);
-    } else if (cmd == "echo") {
-        echoExec(args);
-    } else if (cmd == "quit") {
-        quitExec();
     } else if (cmd == "clr") {
         clearExec();
-    } else if (cmd == "pause") {
-        pauseExec();
+    } else if (cmd == "dir" || cmd == "ls") {
+		listDirContents(args);
     } else if (cmd == "environ") {
 	    printEnvironVars();
+    } else if (cmd == "echo") {
+        echoExec(args);
+    } else if (cmd == "pause") {
+        pauseExec();
+    } else if (cmd == "help") {
+        helpExec();
+    } else if (cmd == "quit") {
+        quitExec();
     } else if (cmd == "history") {
 	    printHistory();
+    } else if (cmd == "pwd") {
+	    pwdExec();
+    } else if (cmd == "export") {
+	    exportExec(args);
     } else {
         cout<<"Command "<<cmd<<": Definition not found.\n";
     }
@@ -191,6 +241,7 @@ int main(int argc, char* argv[]) {
 	}
 
     initializeEnvironmentVars();
+    setShellEnvironmentVar(argv[0]);
 
     while (1){
         string cmd, cmdline;
