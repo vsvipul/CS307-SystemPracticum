@@ -150,23 +150,34 @@ void executeBuiltIn(string cmd, vector<string> args) {
     } else if (cmd == "pause") {
         pauseExec();
     } else if (cmd == "environ") {
-	printEnvironVars();
+		printEnvironVars();
     } else if (cmd == "history") {
-	printHistory();
+		printHistory();
     } else {
         cout<<"Command "<<cmd<<": Definition not found.\n";
     }
 }
 
 int main(int argc, char* argv[]) {
+
+	if (argc==2)
+	{
+		if (freopen(argv[1], "r", stdin)==NULL)
+		{
+			cout << "Error reading file\n";
+			return 0;
+		}
+	}
+
     while (1){
         string cmd, cmdline;
-        printPrompt();
+        if (argc==1) printPrompt();
         cmdline = readLine();
+        if (cin.eof()) break;
         history.pb(cmdline);
         cmd = parseCommand(cmdline);
         vector<string> args = getArgs(cmdline);
-        if (isBuiltIn(cmd)){
+        if (isBuiltIn(cmd)) {
             executeBuiltIn(cmd, args);
         } else {
             cout<<"Command "<<cmd<<": does not exist.\n";
