@@ -1,3 +1,16 @@
+Link to YouTube video: 
+
+The shell is written in C++. To build, simply use
+
+g++ -o myshell myshell.cpp
+
+and then execute 
+
+./myshell
+
+We use standard C++ libraries, and also 3 POSIX API headers available on Linux, "dirent.h", "sys/types.h" and "unistd.h". Some implementation details are given below.
+
+------------------------------------------------------------------------------------------------
 The shell funtionality is implemented using calls to POSIX APIs available on Linux systems.
 
 Reading input from file: We use freopen() to redirect the stdin stream to a file. Rest of the program works unchanged. 
