@@ -6,22 +6,32 @@
 #define pb push_back
 using namespace std;
 
+// An array of valid commands to check if a command is valid or not
 vector<string> allCommands{"cd", "clr", "dir", "environ", "echo", "pause", "help", "quit", "history", "", "pwd", "ls", "export"};
+
+// Map to store the environment variables
 map<string, string> environmentVars;
+
+// An array to store the history of myshell
 vector<string> history;
 
+// environment of the calling shell (bash or zsh)
+// defiend in unistd.h
 extern char** environ;
 
+// Prompt for myshell
 void printPrompt() {
     cout<<"myshell>> ";
 }
 
+// Takes a line of input from the user
 string readLine(){
     string str;
     getline(cin, str);
     return str;
 }
 
+// Gets the first word from the input line
 string parseCommand(string cmdline) {
     string str;
     istringstream ss(cmdline);
@@ -29,6 +39,7 @@ string parseCommand(string cmdline) {
     return str;
 }
 
+// Gets the rest of the words from the input line
 vector<string> getArgs(string cmdline) {
     vector<string> res;
     istringstream ss(cmdline);
@@ -44,11 +55,13 @@ vector<string> getArgs(string cmdline) {
     return res;
 }
 
+// Checks if a command is implemented or not
 bool isBuiltIn(string cmd) {
     vector<string>::iterator it = find(allCommands.begin(), allCommands.end(), cmd);
     return (it != allCommands.end());
 }
 
+// Inserts an environment variable into the environmentVars map
 void insertEnvironmentVar(string var) {
     int j=0;
     for (j=0;j<var.size();j++) {
@@ -61,6 +74,7 @@ void insertEnvironmentVar(string var) {
     environmentVars[keyvar] = keyval;
 }
 
+// Initializes the environment variables of myshell
 void initializeEnvironmentVars() {
     char *s = *environ;
     int i=0;
@@ -71,6 +85,7 @@ void initializeEnvironmentVars() {
     }
 }
 
+// Get the current working directory
 string getCurrentDir(){
     char path[4096];
     getcwd(path, 4096);
@@ -78,6 +93,8 @@ string getCurrentDir(){
 }
 
 // 1 cd
+// Use chdir command to implement, also sets the PWD environment variable
+// Defined in unistd.h
 void changeDir(vector <string> args)
 {
     if (args.size() != 1) {
@@ -94,6 +111,7 @@ void changeDir(vector <string> args)
 }
 
 // 2 clr
+// Clears the terminal screen according to the OS
 void clearExec(){
     #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
     system("cls");
@@ -103,6 +121,8 @@ void clearExec(){
 }
 
 // 3 dir (or ls)
+// Uses opendir and readdir to get contents of a directory
+// Defined in dirent.h and sys/types.h
 void listDirContents(vector <string> args)
 {
     if (args.size() > 1) {
@@ -125,6 +145,7 @@ void listDirContents(vector <string> args)
 }
 
 // 4 environ
+// Prints all the environment variables from the map environmentVars.
 void printEnvironVars()
 {
     for (auto it: environmentVars) {
@@ -133,6 +154,7 @@ void printEnvironVars()
 }
 
 // 5 echo
+// Prints all args
 void echoExec(vector<string> args) {
     for (int i=0;i<args.size();i++){
         cout<<args[i]<<" ";
@@ -141,12 +163,14 @@ void echoExec(vector<string> args) {
 }
 
 // 6 pause
+// Pauses execution until enter is pressed
 void pauseExec() {
     cout<<"Execution paused. Press enter to continue.\n";
     while (cin.get()!='\n');
 }
 
 // 7 help
+// Man page for myshell
 void helpExec() {
     cout<<"\nmyshell\n\nNAME\n\tmyshell - Custom Made Shell from scratch\n\nDESCRIPTION\n\t";
     cout<<"Supports the commands- cd, clr, dir, ls, environ, echo, pause, help, quit, history, pwd, export.\n";
@@ -155,11 +179,13 @@ void helpExec() {
 }
 
 // 8 quit
+// Exits myshell
 void quitExec() {
     exit(1);
 }
 
 // 9 history
+// Prints history of myshell from the history vector
 void printHistory()
 {
     for (int i=0; i<history.size(); ++i) {
@@ -168,6 +194,7 @@ void printHistory()
 }
 
 // 10 set SHELL environment variable
+// Sets the SHELL environment variable
 void setShellEnvironmentVar(char* execName) {
     char path[4096];
     readlink("/proc/self/exe", path, 4096);
@@ -175,12 +202,14 @@ void setShellEnvironmentVar(char* execName) {
 }
 
 // 11 pwd
+// Prints the current working directory
 void pwdExec(){
     string curDir = getCurrentDir();
     cout<<curDir<<"\n";
 }
 
 // 12 export
+// Insert new environment variables into the map environmentVars
 void exportExec(vector<string> args) {
     if (args.size() > 1) {
         cout << "export requires exactly one argument in the format: 'VARNAME=VALUE'\n";
@@ -189,6 +218,8 @@ void exportExec(vector<string> args) {
     insertEnvironmentVar(args[0]); 
 }
 
+
+// Runs function according to the input command
 void executeBuiltIn(string cmd, vector<string> args) {
     if (cmd == "") {
         // Do nothing if just enter is pressed without any input.   
@@ -221,6 +252,7 @@ void executeBuiltIn(string cmd, vector<string> args) {
 
 int main(int argc, char* argv[]) {
 
+    // For running the batchfile
     if (argc==2) {
         if (freopen(argv[1], "r", stdin)==NULL)
         {
@@ -229,7 +261,10 @@ int main(int argc, char* argv[]) {
         }
     }
 
+    // Initialize environment variables for myshell
     initializeEnvironmentVars();
+
+    // Set the shell environment variable.
     setShellEnvironmentVar(argv[0]);
 
     while (1){
