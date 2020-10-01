@@ -172,10 +172,9 @@ void printHistory()
 
 // 10 set SHELL environment variable
 void setShellEnvironmentVar(char* execName) {
-    string curDir = getCurrentDir();
-    string execNameStr = std::string(execName);
-    string shellPath = curDir + execNameStr.substr(1,execNameStr.size()-1);
-    environmentVars["SHELL"] = shellPath;
+    char path[4096];
+    readlink("/proc/self/exe", path, 4096);
+    environmentVars["SHELL"] = string(path);
 }
 
 // 11 pwd
