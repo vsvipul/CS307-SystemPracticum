@@ -80,11 +80,11 @@ string getCurrentDir(){
 // 1 cd
 void changeDir(vector <string> args)
 {
-	if (args.size() != 1) {
-		cout << "cd requires exactly one argument - the directory\n";
-		return;
-	}
-	if (chdir(args[0].c_str()) != 0) {
+    if (args.size() != 1) {
+        cout << "cd requires exactly one argument - the directory\n";
+        return;
+    }
+    if (chdir(args[0].c_str()) != 0) {
         cout<<"Error: Specified directory does not exists.\n";
     } else {
         string curDir = getCurrentDir();
@@ -105,25 +105,23 @@ void clearExec(){
 // 3 dir (or ls)
 void listDirContents(vector <string> args)
 {
-	if (args.size() > 1) {
-		cout << "dir requires exactly one argument - the directory\n";
-		return;
-	}
+    if (args.size() > 1) {
+        cout << "dir requires exactly one argument - the directory\n";
+        return;
+    }
     DIR* directory;
     if (args.size() == 0) {
         directory = opendir(".");
     } else {
         directory = opendir(args[0].c_str());
     }
-	struct dirent * curFile;
-	if (directory != NULL)
-	{
-		while ((curFile = readdir(directory)) !=NULL)
-		{
-			cout << std::string(curFile->d_name) << "\n";
-		}
-		closedir(directory);
-	}
+    struct dirent * curFile;
+    if (directory != NULL) {
+        while ((curFile = readdir(directory)) !=NULL) {
+            cout << std::string(curFile->d_name) << "\n";
+        }
+        closedir(directory);
+    }
 }
 
 // 4 environ
@@ -164,10 +162,9 @@ void quitExec() {
 // 9 history
 void printHistory()
 {
-	for (int i=0; i<history.size(); ++i)
-	{
-		cout << i+1 << " " << history[i] << "\n";
-	}
+    for (int i=0; i<history.size(); ++i) {
+        cout << i+1 << " " << history[i] << "\n";
+    }
 }
 
 // 10 set SHELL environment variable
@@ -186,24 +183,23 @@ void pwdExec(){
 // 12 export
 void exportExec(vector<string> args) {
     if (args.size() > 1) {
-		cout << "export requires exactly one argument in the format: 'VARNAME=VALUE'\n";
-		return;
-	}
-    insertEnvironmentVar(args[0]);
-    
+        cout << "export requires exactly one argument in the format: 'VARNAME=VALUE'\n";
+        return;
+    }
+    insertEnvironmentVar(args[0]); 
 }
 
 void executeBuiltIn(string cmd, vector<string> args) {
     if (cmd == "") {
         // Do nothing if just enter is pressed without any input.   
     } else if (cmd == "cd") {
-		changeDir(args);
+        changeDir(args);
     } else if (cmd == "clr") {
         clearExec();
     } else if (cmd == "dir" || cmd == "ls") {
-		listDirContents(args);
+        listDirContents(args);
     } else if (cmd == "environ") {
-	    printEnvironVars();
+        printEnvironVars();
     } else if (cmd == "echo") {
         echoExec(args);
     } else if (cmd == "pause") {
@@ -213,11 +209,11 @@ void executeBuiltIn(string cmd, vector<string> args) {
     } else if (cmd == "quit") {
         quitExec();
     } else if (cmd == "history") {
-	    printHistory();
+        printHistory();
     } else if (cmd == "pwd") {
-	    pwdExec();
+        pwdExec();
     } else if (cmd == "export") {
-	    exportExec(args);
+        exportExec(args);
     } else {
         cout<<"Command "<<cmd<<": Definition not found.\n";
     }
@@ -225,14 +221,13 @@ void executeBuiltIn(string cmd, vector<string> args) {
 
 int main(int argc, char* argv[]) {
 
-	if (argc==2)
-	{
-		if (freopen(argv[1], "r", stdin)==NULL)
-		{
-			cout << "Error reading file\n";
-			return 0;
-		}
-	}
+    if (argc==2) {
+        if (freopen(argv[1], "r", stdin)==NULL)
+        {
+            cout << "Error reading file\n";
+            return 0;
+        }
+    }
 
     initializeEnvironmentVars();
     setShellEnvironmentVar(argv[0]);
