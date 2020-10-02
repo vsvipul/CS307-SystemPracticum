@@ -1,5 +1,10 @@
 Link to YouTube video: https://youtu.be/y0LMGMe8lnU
 
+
+myshell - Custom shell
+Vipul Sharma B17069
+Swapnil Rustagi B17104
+
 The shell is written in C++. To build, simply use
 
 g++ -o myshell myshell.cpp
