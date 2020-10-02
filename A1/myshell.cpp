@@ -21,7 +21,7 @@ extern char** environ;
 
 // Prompt for myshell
 void printPrompt() {
-    cout<<"myshell>> ";
+    cout<<"\033[1;92mmyshell>>\033[0m ";
 }
 
 // Takes a line of input from the user

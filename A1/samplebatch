@@ -1,0 +1,7 @@
+pwd
+cd ..
+pwd
+cd ..
+pwd
+dir ./
+environ
