@@ -31,30 +31,30 @@ void philo_func(int i) {
     while (1){
         if (i%2){
             philo_forks[i].lock();
-            printf("P%d picked up left fork: F%d\n", i, i);
+            printf("P%d 1forkacquired Picked up left fork\n", i);
             philo_forks[(i+1)%n].lock();
-            printf("P%d picked up right fork: F%d \n", i, (i+1)%n);
+            //printf("P%d picked up right fork \n", i);
         } else {
             philo_forks[(i+1)%n].lock();
-            printf("P%d picked up right fork: F%d \n", i, (i+1)%n);
+            printf("P%d 1forkacquired Picked up right fork \n", i);
             philo_forks[i].lock();
-            printf("P%d picked up left fork: F%d\n", i, i);
+            //printf("P%d picked up left fork\n", i);
         }  
-        printf("P%d started eating.\n", i);
+        printf("P%d eating\n", i);
         this_thread::sleep_for(chrono::seconds(1));
-        printf("P%d stopped eating.\n", i);
+        //printf("P%d stopped eating.\n", i);
         philo_forks[i].unlock();
-        printf("P%d dropped left fork: F%d\n", i, i);
+        //printf("P%d dropped left fork\n", i);
         philo_forks[(i+1)%n].unlock();
-        printf("P%d dropped right fork: F%d \n", i, (i+1)%n);
+        //printf("P%d dropped right fork \n", i);
         
-        // Think for random time between 1s and 5s.
+        // Think for random time between 0.1s and 2s.
         random_device rd;
         mt19937 gen(rd());
-        uniform_int_distribution<> dis(1, 10);
+        uniform_int_distribution<> dis(100, 2000);
         int rand_sleep = dis(gen);
-        printf("P%d thinking for %ds.\n", i, rand_sleep);
-        this_thread::sleep_for(chrono::seconds(rand_sleep));
+        printf("P%d thinking\n", i);
+        this_thread::sleep_for(chrono::milliseconds(rand_sleep));
     }
     
 }
