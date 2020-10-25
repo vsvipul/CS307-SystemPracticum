@@ -29,7 +29,7 @@ int main(int argc, char* argv[]) {
     // 1 column - thinking
     // 2 column - eating
     // 3 column - 1 fork acquired
-    // 5 rows represent
+    // 5 rows represent each philosopher
     int arr[5][3]={0};
     while (getline(inFile, str)) {
         updateArr(str, arr);
