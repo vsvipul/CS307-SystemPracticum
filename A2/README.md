@@ -2,9 +2,10 @@
 ### by Vipul B17069 and Swapnil B17104
 
 ## Problem 1
-- Compile using ```g++ -pthread main.cpp``` and run using ```timeout 30m ./a.out > filename.txt``` .
-- Compile the script using ```g++ -o script script.cpp``` and run on previously generated file using ```./script filename.txt``` to get the results.
-- We have used 2 approaches to prevent deadlock and starvation. You can read more about those in the ```Analysis.pdf``` file.
+- Compile both approaches and the script using ```make```. This will generate 2 executable for approaches - ```main``` and ```main2```, and also the script executable ```script```.
+- Run both the approaches using```timeout 30m ./main > filename.txt``` .
+- Run the script on previously generated file using ```./script filename.txt``` to get the results.
+- We have used 2 approaches to prevent deadlock and starvation. You can read more about those in the ```Analysis.pdf``` file in ```1/``` directory.
 
 ## Problem 2
 
