@@ -1,0 +1,1 @@
+cmd_/home/swapnil/Desktop/Q3/panic/panic.ko := ld -r -m elf_x86_64  --build-id  -T ./scripts/module-common.lds -o /home/swapnil/Desktop/Q3/panic/panic.ko /home/swapnil/Desktop/Q3/panic/panic.o /home/swapnil/Desktop/Q3/panic/panic.mod.o;  true

@@ -1,0 +1,1 @@
+cmd_/home/swapnil/Desktop/Q3/panic/Module.symvers := sed 's/ko$$/o/' /home/swapnil/Desktop/Q3/panic/modules.order | scripts/mod/modpost  -a   -o /home/swapnil/Desktop/Q3/panic/Module.symvers -e -i Module.symvers   -T -

@@ -1,0 +1,1 @@
+cmd_/home/swapnil/Desktop/Q3/NULLdereference/NULLdereference.ko := ld -r -m elf_x86_64  --build-id  -T ./scripts/module-common.lds -o /home/swapnil/Desktop/Q3/NULLdereference/NULLdereference.ko /home/swapnil/Desktop/Q3/NULLdereference/NULLdereference.o /home/swapnil/Desktop/Q3/NULLdereference/NULLdereference.mod.o;  true

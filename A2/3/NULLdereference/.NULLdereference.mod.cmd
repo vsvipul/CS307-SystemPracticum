@@ -1,0 +1,1 @@
+cmd_/home/swapnil/Desktop/Q3/NULLdereference/NULLdereference.mod := { echo  /home/swapnil/Desktop/Q3/NULLdereference/NULLdereference.o; echo; } > /home/swapnil/Desktop/Q3/NULLdereference/NULLdereference.mod

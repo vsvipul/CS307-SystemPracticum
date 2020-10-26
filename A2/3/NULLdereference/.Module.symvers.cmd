@@ -1,0 +1,1 @@
+cmd_/home/swapnil/Desktop/Q3/NULLdereference/Module.symvers := sed 's/ko$$/o/' /home/swapnil/Desktop/Q3/NULLdereference/modules.order | scripts/mod/modpost  -a   -o /home/swapnil/Desktop/Q3/NULLdereference/Module.symvers -e -i Module.symvers   -T -
