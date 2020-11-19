@@ -10,28 +10,43 @@
 #define PORT 8080 
 #define SA struct sockaddr 
 
-void func(int sockfd) 
-{ 
+void func(int sockfd, int argc, char* argv[]) 
+{
+    if (argc == 4) {
+        freopen(argv[2],"r",stdin);
+        freopen(argv[3],"w",stdout);
+    }
     char buff[MAX]; 
     int n; 
     for (;;) { 
         bzero(buff, sizeof(buff)); 
-        printf("Enter the string : "); 
+        if (argc != 4){
+            printf("Enter the string : "); 
+        }
         n = 0; 
         while ((buff[n++] = getchar()) != '\n'); 
         write(sockfd, buff, sizeof(buff)); 
         bzero(buff, sizeof(buff)); 
         read(sockfd, buff, sizeof(buff)); 
-        printf("From Server : %s", buff); 
+        if (argc != 4) {
+            printf("From Server : "); 
+        }
+        printf("%s", buff);
         if ((strncmp(buff, "EXIT", 4)) == 0) { 
-            printf("Client Exit...\n"); 
+            if (argc !=4) {
+                printf("Client Exit...\n"); 
+            }
             break; 
         } 
     } 
 } 
   
-int main() 
+int main(int argc, char* argv[]) 
 { 
+    if (argc<2){
+        printf("Give IP Address of server as argument.\n");
+        exit(1);
+    }
     int sockfd, connfd; 
     struct sockaddr_in servaddr, cli; 
   
@@ -50,7 +65,7 @@ int main()
     servaddr.sin_port = htons(PORT); 
     
     // Replace Server IP Address here.
-    struct hostent *ptrh = gethostbyname("192.168.1.5");
+    struct hostent *ptrh = gethostbyname(argv[1]);
     memcpy(&servaddr.sin_addr,ptrh->h_addr,ptrh->h_length);
 
     // connect the client socket to server socket 
@@ -62,7 +77,7 @@ int main()
         printf("connected to the server..\n"); 
   
     // function for chat 
-    func(sockfd); 
+    func(sockfd, argc, argv); 
   
     // close the socket 
     close(sockfd); 
