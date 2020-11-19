@@ -5,6 +5,7 @@
 - Compile using ```make```. This will generate 3 executables - ```script```, ```server``` and ```client```.
 - If you just want to test manually on 2 VMs run ```./server``` on your server VM and run ```./client YOUR_SERVER_IP``` on your client VM.
 - Both can run simultaneously on both the VMs. Just take care of the server IP you put as the command line argument.
+- Send ```exit``` from client to exit the program anytime.
 - To run automated script tests on client, run ```./script YOUR_SERVER_IP``` on your client VM. This script will perform 3 tasks-
     - Generate random input strings in ```input/``` directory.
     - Generate corresponding outputs in ```expected_output/``` directory.
