@@ -96,6 +96,11 @@ void serve(int consockfd, int i)
 	    int sendsize = response.size()+1;
 	    char stat[1024];
 	    int offset = 0;
+
+	    strcpy(buffer, to_string(sendsize).c_str());
+            write(consockfd, buffer, 10);
+
+
 	    strcpy(stat, response.c_str());
             while (sendsize)
 	    {
