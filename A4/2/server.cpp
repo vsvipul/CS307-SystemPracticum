@@ -18,9 +18,14 @@ void serve(int consockfd, int i)
     char buffer[1024];
     while (1)
     {
-        read(consockfd, buffer, 1010);
+        read(consockfd, buffer, 5);
         string input = string(buffer);    
         cout << input << " " << input.size();
+        if (input == "EXIT")
+        {
+            cout << "Client exited\n";
+            return;
+        }
     }
 }
 

@@ -48,6 +48,7 @@ int main()
     cout << "Commands supported: FILE, EXIT, STAT" << "\n";
     while (1)
     {
+        cout << ">> ";
         string x;
         cin >> x;
         if (x!="FILE" && x!="EXIT" && x!="STAT")
@@ -59,8 +60,9 @@ int main()
         {
             cout << "Enter filename: \n";
             string fname; cin >> fname;
-            strcpy(buff, fname.c_str());
+            strcpy(buff, "FILE");
             write(sockfd, buff, 5);
+            strcpy(buff, fname.c_str());
         }
         if (x=="STAT")
         {
@@ -73,6 +75,7 @@ int main()
             strcpy(buff, "EXIT");
             write(sockfd, buff, 5);
             close(sockfd);
+            break;
         }
     }
 }
