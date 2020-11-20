@@ -11,7 +11,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-
+#include <set>
 using namespace std;
 #define MAXQUEUE 10
 //mutex streammutex;
@@ -19,6 +19,8 @@ using namespace std;
 void serve(int consockfd, int i)
 {
     char buffer[1024];
+    int numBytesSent = 0;
+    set <string> filesDownloaded;
     while (1)
     {
         int x = read(consockfd, buffer, 5);
@@ -53,8 +55,10 @@ void serve(int consockfd, int i)
 			write(consockfd, buffer, 9);
 			int n;
 			while((n=read(filed, buffer, 1000))>0) {
+				numBytesSent += n;
 				write(consockfd, buffer, n);
 			}
+			filesDownloaded.insert(fname);
 			cout << "Finished sending file\n";
 		}
 
@@ -64,6 +68,36 @@ void serve(int consockfd, int i)
             cout << "Client exited\n";
             return;
         }
+	if (input == "STAT")
+	{
+	    string response = "";
+	    response += ("Number of bytes sent = " + to_string(numBytesSent) + "\n");
+	    response += "Files downloaded: \n";
+	    for (auto &x: filesDownloaded)
+	    {
+		response += x;
+		response += "\n";
+	    }
+	    int sendsize = response.size()+1;
+	    char stat[1024];
+	    int offset = 0;
+	    strcpy(stat, response.c_str());
+            while (sendsize)
+	    {
+		if (sendsize >= 10)
+		{
+			write(consockfd, stat+offset, 10);
+			offset += 10;
+			sendsize -= 10;
+		}
+		else
+		{
+			write(consockfd, stat+offset, sendsize);
+			sendsize=0;
+		}
+	    }
+	    cout << "Sending usage stats to client " << i << "\n";
+	}
     }
 }
 
