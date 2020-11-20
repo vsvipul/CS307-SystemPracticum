@@ -11,7 +11,8 @@
 #include <string>
 #include <arpa/inet.h>
 #include <pthread.h>
-
+#include <sys/stat.h>
+#include <fcntl.h>
 using namespace std;
 
 // Server address
@@ -63,6 +64,28 @@ int main()
             strcpy(buff, "FILE");
             write(sockfd, buff, 5);
             strcpy(buff, fname.c_str());
+	    write(sockfd, buff, 1000);
+	    read(sockfd, buff, 9);
+	    string response = string(buff);
+	    if (response == "NOTFOUND")
+	    {
+		cout << "File not found on server\n";
+		continue;
+	    }
+	    if (response == "FOUND")
+	    {
+		cout << "Receiving file from server\n";
+		string path = "RECV_" + fname;
+		int filefd = open(path.c_str(), O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
+		int n;
+		while ((n=read(sockfd, buff, 1000)) > 0)
+		{
+			write(filefd, buff, n);
+			if (n<1000) break;
+		}
+		cout << "Saved at " << path << "\n";
+		close(filefd);
+	    }
         }
         if (x=="STAT")
         {
