@@ -19,8 +19,8 @@
 a) DNS - DNS or a Domain Name Server is a server that acts like a phonebook for the clients on the internet. Everytime we put in a domain name in a browser, the request actually goes to a DNS Server, which then provides the IP Address corresponding to that particular domain name.
 DHCP - DHCP or Dynamic Host Configuration Protocol is a network management protocol used on IP Networks. A DHCP server dynamically assigns IP Addresses to nodes on a network. It allows the nodes to request IP Addresses from the router or the ISP, reducing the need for manual IP Addresses.
 
-b) TCP - TCP or Transmission Control Protocol is a connection-oriented protocol, i.e. conection is first established before transmitting data. It is reliable data delivery protocol. Packets arrive in order at the server. Retransmission of lost packets occurs. Used in HTTP, HTTPS, FTP, SMTP etc.
-UDP - UDP or User Datagram Protocol is a datagram oriented protocol. Unlike TCP, there is no need to establish a connection in this case and also maintaining and terminating it. It is preffered for broadcast or multicast transmissions. It is unreliable data delivery protocol. No ordering of packets is required. No retrasmission of lost packets occurs. Used in DNS, DHCP, VoIP etc.
+b) TCP - TCP or Transmission Control Protocol is a connection-oriented protocol, i.e. connection is first established before transmitting data. It is a reliable data delivery protocol. Packets arrive in order at the server. Retransmission of lost packets occurs. Used in HTTP, HTTPS, FTP, SMTP etc.
+UDP - UDP or User Datagram Protocol is a datagram oriented protocol. Unlike TCP, there is no need to establish a connection in this case and also maintain and terminate it. It is preferred for broadcast or multicast transmissions. It is an unreliable data delivery protocol. No ordering of packets is required. No retransmission of lost packets occurs. Used in DNS, DHCP, VoIP etc.
 
 c) The OSI Layer model was developed in the year 1984 and used in most modern day networks. In this 7 layer model, each layer has a separate function to perform and all these layers work together to transmit data from one node to another over a network. These layers are Physical, Data Link, Network, Transport, Session, Presentation and Application Layers.
 
@@ -38,14 +38,15 @@ enp0s3    Link encap:Ethernet  HWaddr 08:00:27:60:ea:c1
 IP Address from ifconfig - 192.168.1.7
 IP Address from ip2location - 117.207.52.35
 
-The reason for this difference is that there are finite number of IPs in the world. Thus, there is need for routers to which my computer is connected to. The IP address 192.168.1.7 is assigned to my computer by the router and the IP Address 117.207.52.35 is assigned to me by my ISP - BSNL. This same IP Address maybe assigned to many people across North India as the location showed on ip2location is Ambala, Haryana.
+The reason for this difference is that there are a finite number of IPs in the world. Thus, there is a need for routers to which my computer is connected to. The IP address 192.168.1.7 is assigned to my computer by the router and the IP Address 117.207.52.35 is assigned to me by my ISP - BSNL. This same IP Address may be assigned to many people across North India as the location shown on ip2location is Ambala, Haryana.
 
-e) 0.0.0.0 is used to designate an unknown or invalid node on a network. It has different uses in different contexts. For example, to send a request from a node to DHCP to get an IP Address assigned, a packet is send to 0.0.0.0 along with the MAC Address of the node.
+e) 0.0.0.0 is used to designate an unknown or invalid node on a network. It has different uses in different contexts. For example, to send a request from a node to DHCP to get an IP Address assigned, a packet is sent to 0.0.0.0 along with the MAC Address of the node.
 
 255.255.255.255 is the broadcast address which is a network address used to transmit to all devices connected on the network. 
 
 f) 
-vipul@vipul:~/CS307-SystemPracticum/A4/1$ traceroute harvard.edutraceroute to harvard.edu (23.185.0.1), 30 hops max, 60 byte packets
+vipul@vipul:~/CS307-SystemPracticum/A4/1$ traceroute harvard.edu 
+traceroute to harvard.edu (23.185.0.1), 30 hops max, 60 byte packets
  1  192.168.1.1 (192.168.1.1)  1.948 ms  1.920 ms  1.876 ms
  2  117.207.52.1 (117.207.52.1)  1.847 ms * *
  3  * * *
@@ -65,4 +66,3 @@ vipul@vipul:~/CS307-SystemPracticum/A4/1$ traceroute harvard.edutraceroute to ha
 172.23.183.161 - Private IP Address LAN
 172.28.132.245 - Private IP Address LAN
 23.185.0.1 - Public Proxy Server harvard.edu - California, USA
-
