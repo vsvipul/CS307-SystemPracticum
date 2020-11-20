@@ -91,6 +91,15 @@ int main()
         {
             strcpy(buff, "STAT");
             write(sockfd, buff, 5);
+	    string response = "";
+	    int n;
+	    while ((n=read(sockfd, buff, 10)) > 0)
+            {
+		  buff[n]='\0';
+                  response += string(buff);
+                  if (n<10) break;
+            }
+	    cout << response << "\n";
         }
         if (x=="EXIT")
         {
