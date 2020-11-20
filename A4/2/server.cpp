@@ -9,6 +9,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
 using namespace std;
 #define MAXQUEUE 10
 //mutex streammutex;
@@ -36,8 +39,8 @@ void serve(int consockfd, int i)
 		}
 		string fname = string(buffer);
 		cout << "Client " << i << " requested file " << fname << "\n";
-		FILE * f = fopen(fname.c_str(), "r");
-		if (f==NULL)
+		int filed = open(fname.c_str(), O_RDONLY);
+		if (filed==-1)
 		{
 			cout << "File not found\n";
 			strcpy(buffer, "NOTFOUND");
@@ -48,9 +51,11 @@ void serve(int consockfd, int i)
 			cout << "Sending file " << fname << "\n";
 			strcpy(buffer, "FOUND");
 			write(consockfd, buffer, 9);
-			while(fgets(buffer, 1000 , f) != NULL) {
-				write(consockfd, buffer, 1000);
+			int n;
+			while((n=read(filed, buffer, 1000))>0) {
+				write(consockfd, buffer, n);
 			}
+			cout << "Finished sending file\n";
 		}
 
 	}
