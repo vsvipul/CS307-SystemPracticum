@@ -74,14 +74,18 @@ int main()
 	    }
 	    if (response == "FOUND")
 	    {
+		read(sockfd, buff, 10);
+		int size = stoi(buff);
 		cout << "Receiving file from server\n";
 		string path = "RECV_" + fname;
 		int filefd = open(path.c_str(), O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
 		int n;
-		while ((n=read(sockfd, buff, 1000)) > 0)
+		while (size && (n=read(sockfd, buff, 1000)) > 0)
 		{
+			//cout << n << "\n";
 			write(filefd, buff, n);
-			if (n<1000) break;
+			size -= n;
+			// if (n<1000) break;
 		}
 		cout << "Saved at " << path << "\n";
 		close(filefd);
@@ -93,11 +97,11 @@ int main()
             write(sockfd, buff, 5);
 	    string response = "";
 	    int n;
-	    while ((n=read(sockfd, buff, 10)) > 0)
+	    while ((n=read(sockfd, buff, 1000)) > 0)
             {
 		  buff[n]='\0';
                   response += string(buff);
-                  if (n<10) break;
+                  if (n<1000) break;
             }
 	    cout << response << "\n";
         }
