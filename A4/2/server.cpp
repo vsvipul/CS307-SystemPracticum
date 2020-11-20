@@ -18,9 +18,42 @@ void serve(int consockfd, int i)
     char buffer[1024];
     while (1)
     {
-        read(consockfd, buffer, 5);
-        string input = string(buffer);    
-        cout << input << " " << input.size();
+        int x = read(consockfd, buffer, 5);
+	if (x<5)
+	{
+		cout << "No input from client " << i << ". Closing connection\n";
+		close(consockfd);
+		break;
+	}
+        string input = string(buffer);
+        // cout << input << " " << input.size() << "\n";
+	if (input == "FILE")
+	{
+		int n=read(consockfd, buffer, 1000);
+		if (n<=0)
+		{
+			continue;
+		}
+		string fname = string(buffer);
+		cout << "Client " << i << " requested file " << fname << "\n";
+		FILE * f = fopen(fname.c_str(), "r");
+		if (f==NULL)
+		{
+			cout << "File not found\n";
+			strcpy(buffer, "NOTFOUND");
+			write(consockfd, buffer, 9);
+		}
+		else
+		{
+			cout << "Sending file " << fname << "\n";
+			strcpy(buffer, "FOUND");
+			write(consockfd, buffer, 9);
+			while(fgets(buffer, 1000 , f) != NULL) {
+				write(consockfd, buffer, 1000);
+			}
+		}
+
+	}
         if (input == "EXIT")
         {
             cout << "Client exited\n";
@@ -59,7 +92,7 @@ int main()
         /* Accept incoming connection, obtaining a new socket for it */
         consockfd = accept(lstnsockfd, (struct sockaddr *) &cli_addr, &clilen);
         
-        printf("Accepted connection no %d\n", i);
+        printf("Accepted connection from client no %d\n", i);
         threads.push_back(thread(serve, consockfd, i));
         ++i;
     }
