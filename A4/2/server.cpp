@@ -41,6 +41,14 @@ void serve(int consockfd, int i)
 		}
 		string fname = string(buffer);
 		cout << "Client " << i << " requested file " << fname << "\n";
+		int size=0;
+		FILE * f = fopen(fname.c_str(), "r");
+		if (f!=NULL)
+		{
+			fseek(f, 0, SEEK_END);
+                        size = ftell(f);
+		}
+		fclose(f);
 		int filed = open(fname.c_str(), O_RDONLY);
 		if (filed==-1)
 		{
@@ -53,10 +61,17 @@ void serve(int consockfd, int i)
 			cout << "Sending file " << fname << "\n";
 			strcpy(buffer, "FOUND");
 			write(consockfd, buffer, 9);
+			string sz = to_string(size);
+			strcpy(buffer, sz.c_str());
+			write(consockfd, buffer, 10);
 			int n;
 			while((n=read(filed, buffer, 1000))>0) {
 				numBytesSent += n;
-				write(consockfd, buffer, n);
+				if (write(consockfd, buffer, n) == -1)
+				{
+					cout << "Write failed\n";
+					break;
+				}
 			}
 			filesDownloaded.insert(fname);
 			cout << "Finished sending file\n";
@@ -84,11 +99,11 @@ void serve(int consockfd, int i)
 	    strcpy(stat, response.c_str());
             while (sendsize)
 	    {
-		if (sendsize >= 10)
+		if (sendsize >= 1000)
 		{
-			write(consockfd, stat+offset, 10);
-			offset += 10;
-			sendsize -= 10;
+			write(consockfd, stat+offset, 1000);
+			offset += 1000;
+			sendsize -= 1000;
 		}
 		else
 		{
