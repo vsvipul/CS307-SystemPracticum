@@ -97,11 +97,13 @@ int main()
             write(sockfd, buff, 5);
 	    string response = "";
 	    int n;
-	    while ((n=read(sockfd, buff, 1000)) > 0)
+	    read(sockfd, buff, 10);
+            int size = stoi(buff);
+	    while (size && (n=read(sockfd, buff, 1000)) > 0)
             {
 		  buff[n]='\0';
                   response += string(buff);
-                  if (n<1000) break;
+		  size -= n;
             }
 	    cout << response << "\n";
         }
