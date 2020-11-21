@@ -1,4 +1,4 @@
-# Lab Assignment 3
+# Lab Assignment 4
 ### by Vipul B17069 and Swapnil B17104
 
 ## Problem 1
@@ -14,6 +14,14 @@
 
 
 ## Problem 2
+
+- Find out IP address of system on which server will be executed, and change line 31 of `client.cpp` accordingly.
+- Compile by executing `g++ -o server -pthread -std=c++11 server.cpp` and `g++ -o client -pthread -std=c++11 client.cpp`
+- On server machine, execute `./server` and on client, execute `./client`.
+
+Server does not support any interaction.
+Client supports 3 commands (case-sensitive): FILE, STAT, EXIT.
+Typing FILE, prompts for filename. 
 
 ## Problem 3
 a) DNS - DNS or a Domain Name Server is a server that acts like a phonebook for the clients on the internet. Everytime we put in a domain name in a browser, the request actually goes to a DNS Server, which then provides the IP Address corresponding to that particular domain name.
